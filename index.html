@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-title" content="Stunt Run">
 <meta name="theme-color" content="#07090c">
 <link rel="manifest" href="manifest.json">
-<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="apple-touch-icon" href="icon-180.png?v=2">
 <style>html,body{margin:0;height:100%;background:#07090c;overflow:hidden;overscroll-behavior:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}[hidden]{display:none!important}</style>
 <title>McGregor Stunt Run</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -2850,6 +2850,7 @@ setCircuit('A');
 /* ---------------- loop ---------------- */
 let running=false, paused=false, last=performance.now(), acc=0;
 function frame(now){
+  resize();
   requestAnimationFrame(frame);
   const dt=Math.min(0.05,(now-last)/1000); last=now;
   const inp=readInput();
@@ -2870,8 +2871,10 @@ function frame(now){
   updateAudio(car.rail||!car.air?Math.abs(car.speed):car.vel.length(), Math.min(1,Math.max(plUp,plBack,plSide*0.7)));
   renderer.render(scene,camera);
 }
+let _rw=0,_rh=0;
 function resize(){
-  const w=innerWidth, h=innerHeight;
+  const cv=renderer.domElement, w=Math.max(1,cv.clientWidth||innerWidth), h=Math.max(1,cv.clientHeight||innerHeight);
+  if(w===_rw && h===_rh) return; _rw=w; _rh=h;
   renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix();
 }
 addEventListener('resize',resize); addEventListener('orientationchange',()=>setTimeout(resize,200));
